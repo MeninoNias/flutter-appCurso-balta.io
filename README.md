@@ -1,4 +1,6 @@
-# flutter_introducao
+# Flutter | Curso de introducao
+[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/)
+![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=MeninoNias.MeninoNias)
 
 A new Flutter project.
 
