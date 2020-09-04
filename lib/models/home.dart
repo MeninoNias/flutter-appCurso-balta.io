@@ -14,6 +14,16 @@ class MyHomePage extends StatefulWidget {
     items.add(Item(title: "Item 05", done: false));
     items.add(Item(title: "Item 06", done: false));
     items.add(Item(title: "Item 07", done: false));
+    items.add(Item(title: "Item 03", done: false));
+    items.add(Item(title: "Item 04", done: false));
+    items.add(Item(title: "Item 05", done: false));
+    items.add(Item(title: "Item 06", done: false));
+    items.add(Item(title: "Item 07", done: false));
+    items.add(Item(title: "Item 03", done: false));
+    items.add(Item(title: "Item 04", done: false));
+    items.add(Item(title: "Item 05", done: false));
+    items.add(Item(title: "Item 06", done: false));
+    items.add(Item(title: "Item 07", done: false));
   }
 
   @override
@@ -21,17 +31,81 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var newTaskCtrl = TextEditingController();
+
+  FocusNode myFocusNode;
+
+  void add() {
+    setState(() {
+      if (newTaskCtrl.text.isEmpty) {
+        return;
+      }
+      widget.items.add(Item(title: newTaskCtrl.text, done: false));
+      newTaskCtrl.text = "";
+    });
+  }
+
+  void remove(int index) {
+    setState(() {
+      widget.items.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("To do LIST"),
+        title: TextFormField(
+          controller: newTaskCtrl,
+          keyboardType: TextInputType.text,
+          style: TextStyle(color: Colors.white, fontSize: 18),
+          decoration: InputDecoration(
+              labelText: "Nova Tarefa",
+              labelStyle: TextStyle(color: Colors.white)),
+        ),
       ),
       body: ListView.builder(
         itemCount: widget.items.length,
         itemBuilder: (context, index) {
-          return Text(widget.items[index].title);
+          final item = widget.items[index];
+          return Dismissible(
+            direction: DismissDirection.endToStart,
+            child: CheckboxListTile(
+              title: Text(item.title),
+              value: item.done,
+              onChanged: (value) {
+                setState(() {
+                  item.done = value;
+                });
+              },
+            ),
+            background: Container(
+              padding: EdgeInsets.only(right: 20.0),
+              child: new Align(
+                alignment: Alignment.centerRight,
+                child: Text('Delete',
+                    textAlign: TextAlign.right,
+                    style: new TextStyle(color: Colors.white, fontSize: 18)),
+              ),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [Colors.green, Colors.red])),
+            ),
+            onDismissed: (direction) {
+              remove(index);
+            },
+            key: Key(item.title),
+          );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          add();
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.pink,
       ),
     );
   }
