@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'item.dart';
 
@@ -7,23 +10,6 @@ class MyHomePage extends StatefulWidget {
 
   MyHomePage() {
     items = [];
-    items.add(Item(title: "Item 01", done: false));
-    items.add(Item(title: "Item 02", done: true));
-    items.add(Item(title: "Item 03", done: false));
-    items.add(Item(title: "Item 04", done: false));
-    items.add(Item(title: "Item 05", done: false));
-    items.add(Item(title: "Item 06", done: false));
-    items.add(Item(title: "Item 07", done: false));
-    items.add(Item(title: "Item 03", done: false));
-    items.add(Item(title: "Item 04", done: false));
-    items.add(Item(title: "Item 05", done: false));
-    items.add(Item(title: "Item 06", done: false));
-    items.add(Item(title: "Item 07", done: false));
-    items.add(Item(title: "Item 03", done: false));
-    items.add(Item(title: "Item 04", done: false));
-    items.add(Item(title: "Item 05", done: false));
-    items.add(Item(title: "Item 06", done: false));
-    items.add(Item(title: "Item 07", done: false));
   }
 
   @override
@@ -49,6 +35,24 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       widget.items.removeAt(index);
     });
+  }
+
+  _MyHomePageState() {
+    load();
+  }
+
+  Future load() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    var data = prefs.getString('data');
+    if (data != null) {
+      Iterable decoded = jsonDecode(data);
+      List<Item> result = decoded.map((e) => Item.fromJson(e)).toList();
+
+      setState(() {
+        widget.items = result;
+      });
+    }
   }
 
   @override
@@ -80,10 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             background: Container(
-              padding: EdgeInsets.only(right: 20.0),
+              padding: EdgeInsets.only(right: 35.0),
               child: new Align(
                 alignment: Alignment.centerRight,
-                child: Text('Delete',
+                child: Text('DELETE',
                     textAlign: TextAlign.right,
                     style: new TextStyle(color: Colors.white, fontSize: 18)),
               ),
@@ -91,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   gradient: LinearGradient(
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
-                      colors: [Colors.green, Colors.red])),
+                      colors: [Colors.red, Colors.green])),
             ),
             onDismissed: (direction) {
               remove(index);
